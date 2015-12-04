@@ -1,7 +1,7 @@
 {
   "name": "svn-git-migrate",
   "description": "Migrate to Git from SVN toolkit",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "license": "MIT",
   "repository": "andischerer/svn-git-migrate",
   "author": {
@@ -9,7 +9,7 @@
     "email": "t3asdev@googlemail.com"
   },
   "engines": {
-    "node": ">=4.0.0"
+    "node": ">=0.12.0"
   },
   "main": "index.js",
   "bin": "cli.js",
@@ -18,17 +18,14 @@
     "cli.js"
   ],
   "keywords": [
-  "cli-app",
-  "cli",
-  "git",
-  "svn",
-  "migrate",
-  "vcs"
-],
+    "cli-app",
+    "cli",
+    "git",
+    "svn",
+    "migrate",
+    "vcs"
+  ],
   "preferGlobal": true,
-  "engines": {
-    "node": ">=0.12.0"
-  },
   "scripts": {
     "test": "node_modules/.bin/eslint ."
   },
