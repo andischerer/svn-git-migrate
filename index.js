@@ -62,6 +62,7 @@ migrate.clone = function (svnRepoUrl, options) {
 	];
 	gitArgs.push(svnRepoUrl);
 	gitArgs.push('--stdlayout');
+	gitArgs.push('--prefix=origin/');
 
 	return execCommand(gitArgs.concat(parseOptions(options))).then(() => Promise.resolve(repoName));
 };
