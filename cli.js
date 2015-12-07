@@ -67,7 +67,6 @@ if (commands.hasOwnProperty(command)) {
 						process.chdir(repoName);
 						return Promise.resolve();
 					})
-					.then(svnGitMigrate.ignore)
 					.then(svnGitMigrate.convertRemotes)
 					.then(svnGitMigrate.clean)
 					.then(() => {
