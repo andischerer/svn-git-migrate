@@ -98,6 +98,8 @@ migrate.convertRemotes = function () {
 				let remoteName = sanitizeFilename(decodeURI(remotePath.split('/').pop()));
 				// and whitespaces
 				remoteName = remoteName.replace(/ +/g, '-');
+				// and lodash
+				remoteName = remoteName.replace(/_+/g, '-');
 
 				let convertedRefsFilePath;
 				let remoteType;
