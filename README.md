@@ -4,7 +4,7 @@
 
 
 ## Install
-
+Make sure you have git, git-svn, and svn installed and the binaries are accessible via System path.
 ```
 $ npm install --global svn-git-migrate
 ```
