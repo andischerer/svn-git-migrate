@@ -96,24 +96,25 @@ migrate.convertRemotes = function () {
 			// skip local refs and deleted branches which could not referenced by git svn
 			if (remotePath.startsWith('refs/remotes/') && !remotePath.includes('@')) {
 				let remoteName = sanitizeFilename(decodeURI(remotePath.split('/').pop()));
-				// and whitespaces
-				remoteName = remoteName.replace(/ +/g, '-');
-				// and lodash
-				remoteName = remoteName.replace(/_+/g, '-');
 
-				let convertedRefsFilePath;
-				let remoteType;
-				if (remotePath.startsWith('refs/remotes/origin/tags/')) {
-					// we have a tag
-					convertedRefsFilePath = path.join(TAG_PATH, remoteName);
-					remoteType = 'tag';
-				} else if (remotePath.startsWith('refs/remotes/origin/')) {
-					// we have a branch
-					convertedRefsFilePath = path.join(BRANCH_PATH, remoteName);
-					remoteType = 'branch';
+				if (remoteName && remoteName.length > 0) {
+					// replace non word chars
+					remoteName = remoteName.replace(/\W/g, '-').replace(/-+/g, '-');
+
+					let convertedRefsFilePath;
+					let remoteType;
+					if (remotePath.startsWith('refs/remotes/origin/tags/')) {
+						// we have a tag
+						convertedRefsFilePath = path.join(TAG_PATH, remoteName);
+						remoteType = 'tag';
+					} else if (remotePath.startsWith('refs/remotes/origin/')) {
+						// we have a branch
+						convertedRefsFilePath = path.join(BRANCH_PATH, remoteName);
+						remoteType = 'branch';
+					}
+					fs.writeFileSync(convertedRefsFilePath, ref, 'utf8');
+					console.log(`Local ${remoteType} "${remoteName}" created`);
 				}
-				fs.writeFileSync(convertedRefsFilePath, ref, 'utf8');
-				console.log(`Local ${remoteType} "${remoteName}" created`);
 			}
 		});
 
