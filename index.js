@@ -7,7 +7,6 @@ const fs = require('fs');
 const ini = require('ini');
 const del = require('del');
 const Promise = require('pinkie-promise');
-const sanitizeFilename = require('sanitize-filename');
 const mkdirp = require('mkdirp');
 const url = require('url');
 const decamelizeKeys = require('decamelize-keys');
@@ -48,6 +47,14 @@ function parseOptions(options) {
 	return gitArgs;
 }
 
+function cleanRemoteName(name) {
+	let rName = decodeURI(name);
+	rName = rName.replace(/ä/g, 'ae').replace(/ö/g, 'oe').replace(/ü/g, 'ue').replace(/Ä/g, 'Ae').replace(/Ö/g, 'Oe').replace(/Ü/g, 'Ue').replace(/ß/g, 'ss');
+	rName = rName.replace(/[\W_]/g, '-');
+	rName = rName.replace(/-+/g, '-');
+	return rName;
+}
+
 function migrate() {}
 
 migrate.clone = function (svnRepoUrl, options) {
@@ -78,42 +85,37 @@ migrate.rebase = function (options) {
 
 migrate.convertRemotes = function () {
 	return new Promise(resolve => {
-		const out = childProcess.execSync('git show-ref').toString();
+		const out = childProcess.execSync('git branch -r --no-merged master').toString();
 		const lines = out.split('\n').map(line => line.trim());
 
 		// create necessary Folders
 		mkdirp.sync('.git/refs/heads');
 		mkdirp.sync('.git/refs/tags');
 
-		lines.forEach(line => {
-			if (line === '') {
-				return;
-			}
-			const lineParts = line.split(' ');
-			const ref = lineParts[0];
-			const remotePath = lineParts[1];
-
+		lines.forEach(remotePath => {
 			// skip local refs and deleted branches which could not referenced by git svn
-			if (remotePath.startsWith('refs/remotes/') && !remotePath.includes('@')) {
-				let remoteName = sanitizeFilename(decodeURI(remotePath.split('/').pop()));
+			if (remotePath.startsWith('origin/') && !remotePath.includes('@')) {
+				const refOut = childProcess.execSync(`git show-ref ${remotePath}`).toString();
+				const ref = refOut.split(' ').shift();
 
-				if (remoteName && remoteName.length > 0) {
-					// replace non word chars
-					remoteName = remoteName.replace(/\W/g, '-').replace(/-+/g, '-');
+				const remoteName = remotePath.split('/').pop();
+				const remoteNameCleaned = cleanRemoteName(remoteName);
 
+				if (remoteNameCleaned && remoteNameCleaned.length > 0 && ref) {
 					let convertedRefsFilePath;
 					let remoteType;
-					if (remotePath.startsWith('refs/remotes/origin/tags/')) {
+
+					if (remotePath.startsWith('origin/tags/')) {
 						// we have a tag
-						convertedRefsFilePath = path.join(TAG_PATH, remoteName);
+						convertedRefsFilePath = path.join(TAG_PATH, remoteNameCleaned);
 						remoteType = 'tag';
-					} else if (remotePath.startsWith('refs/remotes/origin/')) {
+					} else {
 						// we have a branch
-						convertedRefsFilePath = path.join(BRANCH_PATH, remoteName);
+						convertedRefsFilePath = path.join(BRANCH_PATH, remoteNameCleaned);
 						remoteType = 'branch';
 					}
 					fs.writeFileSync(convertedRefsFilePath, ref, 'utf8');
-					console.log(`Local ${remoteType} "${remoteName}" created`);
+					console.log(`Local ${remoteType} "${remoteNameCleaned}" created`);
 				}
 			}
 		});

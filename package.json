@@ -36,8 +36,7 @@
     "meow": "3.6.0",
     "mkdir": "0.0.2",
     "mkdirp": "0.5.1",
-    "pinkie-promise": "2.0.0",
-    "sanitize-filename": "1.5.3"
+    "pinkie-promise": "2.0.0"
   },
   "devDependencies": {
     "babel-eslint": "5.0.0-beta4",
