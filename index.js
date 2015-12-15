@@ -95,7 +95,7 @@ migrate.convertRemotes = function () {
 		lines.forEach(remotePath => {
 			// skip local refs and deleted branches which could not referenced by git svn
 			if (remotePath.startsWith('origin/') && !remotePath.includes('@')) {
-				const refOut = childProcess.execSync(`git show-ref ${remotePath}`).toString();
+				const refOut = childProcess.execSync(`git show-ref "${remotePath}"`).toString();
 				const ref = refOut.split(' ').shift();
 
 				const remoteName = remotePath.split('/').pop();
