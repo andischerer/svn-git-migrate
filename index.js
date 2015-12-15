@@ -152,12 +152,18 @@ migrate.clean = function () {
 	// remove git-svn specific folders
 	del.sync('.git/refs/remotes');
 	del.sync('.git/svn');
+	del.sync('.git/refs/original');
+	del.sync('.git/logs/');
 
 	// cleanup ini
 	const gitConfig = ini.parse(fs.readFileSync(GIT_CONFIG_PATH, 'utf-8'));
 	delete gitConfig['svn-remote "svn"'];
 	delete gitConfig.svn;
 	fs.writeFileSync(GIT_CONFIG_PATH, ini.stringify(gitConfig));
+
+	// run gc
+	const output = childProcess.execSync('git gc --prune=now').toString();
+	console.log(output);
 
 	console.log('SVN-References cleaned');
 };
