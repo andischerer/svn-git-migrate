@@ -26,7 +26,7 @@ function execCommand(gitArgs) {
 			if (code === 0) {
 				resolve();
 			} else {
-				reject(new Error('git svn clone failed'));
+				reject(new Error(`ERROR, Command "git ${gitArgs.join(' ')}" failed`));
 			}
 		});
 	});
