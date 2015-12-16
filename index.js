@@ -141,11 +141,12 @@ migrate.clean = function () {
 		console.log(childProcess.execSync('git filter-branch -f --msg-filter \'sed -e "/git-svn-id:/d"\' -- --all').toString());
 	}
 
-	// remove git-svn specific folders
+	// remove git-svn specific and temporary folders
 	del.sync('.git/refs/remotes');
 	del.sync('.git/svn');
 	del.sync('.git/refs/original');
 	del.sync('.git/logs/');
+	del.sync('.git/packed-refs');
 
 	// cleanup ini
 	const gitConfig = ini.parse(fs.readFileSync(GIT_CONFIG_PATH, 'utf-8'));
