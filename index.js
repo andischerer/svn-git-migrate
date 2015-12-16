@@ -129,7 +129,7 @@ migrate.ignore = function () {
 	console.log(childProcess.execSync('git checkout master').toString());
 	console.log(childProcess.execSync('git svn show-ignore > .gitignore').toString());
 	console.log(childProcess.execSync('git add .gitignore').toString());
-	console.log(childProcess.execSync('git commit --author="svn-benutzer" -m \'Convert svn:ignore properties to .gitignore.\'').toString());
+	console.log(childProcess.execSync('git commit -m \'Convert svn:ignore properties to .gitignore.\'').toString());
 	console.log('.gitignore done');
 	return Promise.resolve();
 };
