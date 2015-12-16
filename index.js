@@ -126,8 +126,11 @@ migrate.convertRemotes = function () {
 };
 
 migrate.ignore = function () {
-	const output = childProcess.execSync('git svn create-ignore').toString();
-	console.log(output);
+	console.log(childProcess.execSync('git checkout master'));
+	console.log(childProcess.execSync('git svn create-ignore').toString());
+	console.log(childProcess.execSync('git svn create-ignore').toString());
+	console.log('git add .gitignore');
+	console.log('git commit --author="svn-git-migrate" -m \'Convert svn:ignore properties to .gitignore.\'');
 	console.log('.gitignore done');
 	return Promise.resolve();
 };
