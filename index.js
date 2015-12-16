@@ -126,11 +126,11 @@ migrate.convertRemotes = function () {
 };
 
 migrate.ignore = function () {
-	console.log(childProcess.execSync('git checkout master'));
+	console.log(childProcess.execSync('git checkout master').toString());
 	console.log(childProcess.execSync('git svn create-ignore').toString());
-	console.log(childProcess.execSync('git svn create-ignore').toString());
-	console.log('git add .gitignore');
-	console.log('git commit --author="svn-git-migrate" -m \'Convert svn:ignore properties to .gitignore.\'');
+	console.log(childProcess.execSync('git add .gitignore').toString());
+	console.log(childProcess.execSync('git add .gitignore').toString());
+	console.log(childProcess.execSync('git commit --author="svn-git-migrate" -m \'Convert svn:ignore properties to .gitignore.\'').toString());
 	console.log('.gitignore done');
 	return Promise.resolve();
 };
@@ -138,18 +138,8 @@ migrate.ignore = function () {
 migrate.clean = function () {
 	// remove git-svn-id in commits (not for windows, sed is missing)
 	if (/^win/.test(process.platform) === false) {
-		const branches = childProcess.execSync('git branch').toString();
-		const branchList = branches.split('\n');
-		branchList.forEach(line => {
-			const lineParts = line.split(' ');
-			const branchName = lineParts.pop().trim();
-			if (branchName !== '') {
-				childProcess.execSync(`git checkout ${branchName}`);
-				const output = childProcess.execSync('git filter-branch -f --msg-filter \'sed -e "/git-svn-id:/d"\'').toString();
-				console.log(output);
-			}
-		});
-		childProcess.execSync('git checkout master');
+		console.log(childProcess.execSync('git checkout master').toString());
+		console.log(childProcess.execSync('git filter-branch -f --msg-filter \'sed -e "/git-svn-id:/d"\' -- --all').toString());
 	}
 
 	// remove git-svn specific folders
