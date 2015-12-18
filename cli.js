@@ -15,7 +15,7 @@ const commands = {
 	remotes: '  remotes: convert remote branches and tags to local ones',
 	clean: '  clean: cleanup any git-svn repository information from repo',
 	ignore: '  ignore: create .gitignore file from svn properties',
-	all: '  all: runs clone, remotes and clean in sequence'
+	all: '  all: runs clone, remotes, ignore and clean in sequence'
 };
 
 const helpText = [
@@ -68,6 +68,7 @@ if (commands.hasOwnProperty(command)) {
 						return Promise.resolve();
 					})
 					.then(svnGitMigrate.convertRemotes)
+					.then(svnGitMigrate.ignore)
 					.then(svnGitMigrate.clean)
 					.then(() => {
 						console.log('\n\nDONE');
