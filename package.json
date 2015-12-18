@@ -1,7 +1,7 @@
 {
   "name": "svn-git-migrate",
   "description": "Migrate to Git from SVN toolkit",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "license": "MIT",
   "repository": "andischerer/svn-git-migrate",
   "author": {
